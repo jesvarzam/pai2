@@ -1,63 +1,81 @@
 import socket
-import os
 import threading
 import hashlib
+import signal
+import sys
 
+HOST = '127.0.0.1'
+PORT = 1233
 
-# Create Socket (TCP) Connection
-ServerSocket = socket.socket(family = socket.AF_INET, type = socket.SOCK_STREAM) 
-host = '127.0.0.1'
-port = 1233
-ThreadCount = 0
-try:
-    ServerSocket.bind((host, port))
-except socket.error as e:
-    print(str(e))
+def signal_handler(key, frame):
+	print("\n\n[!] Exiting...\n")
+	sys.exit(1)
 
-print('Waitiing for a Connection..')
-ServerSocket.listen(5)
-HashTable = {}
+signal = signal.signal(signal.SIGINT, signal_handler)
 
-# Function : For each client 
 def threaded_client(connection):
-    connection.send(str.encode('ENTER USERNAME : ')) # Request Username
-    name = connection.recv(2048)
-    connection.send(str.encode('ENTER PASSWORD : ')) # Request Password
+    connection.send(str.encode('Enter your username: '))
+    username = connection.recv(2048)
+    username = username.decode()
+    connection.send(str.encode('Enter your password: '))
     password = connection.recv(2048)
     password = password.decode()
-    name = name.decode()
-    password=hashlib.sha256(str.encode(password)).hexdigest() # Password hash using SHA256
-# REGISTERATION PHASE   
-# If new user,  regiter in Hashtable Dictionary  
-    if name not in HashTable:
-        HashTable[name]=password
-        connection.send(str.encode('Registeration Successful')) 
-        print('Registered : ',name)
-        print("{:<8} {:<20}".format('USER','PASSWORD'))
+    password=hashlib.sha256(str.encode(password)).hexdigest()
+
+    check_login(connection, username, password)
+    
+    transference = connection.recv(2048)
+    from_account = transference.decode().split(',')[0].strip()
+    to_account = transference.decode().split(',')[1].strip()
+    amount = transference.decode().split(',')[2].strip()
+
+    send_message(connection, from_account, to_account, amount)
+    connection.close()
+
+def check_login(connection, username, password):
+ 
+    if username not in HashTable:
+        HashTable[username]=password
+        connection.send(str.encode('[+] Registration successful')) 
+        print('Registered: ',username)
+        print("{:<8} {:<20}".format('Username','Password'))
         for k, v in HashTable.items():
             label, num = k,v
             print("{:<8} {:<20}".format(label, num))
         print("-------------------------------------------")
         
     else:
-# If already existing user, check if the entered password is correct
-        if(HashTable[name] == password):
-            connection.send(str.encode('Connection Successful')) # Response Code for Connected Client 
-            print('Connected : ',name)
+        if(HashTable[username] == password):
+            connection.send(str.encode('[+] Connection successful'))
+            print('[+] Connected: ',username)
         else:
-            connection.send(str.encode('Login Failed')) # Response code for login failed
-            print('Connection denied : ',name)
-    while True:
-        break
-    connection.close()
+            connection.send(str.encode('[!] Login failed'))
+            print('Connection denied: ',username)
 
-while True:
-    Client, address = ServerSocket.accept()
-    client_handler = threading.Thread(
-        target=threaded_client,
-        args=(Client,)  
-    )
-    client_handler.start()
-    ThreadCount += 1
-    print('Connection Request: ' + str(ThreadCount))
-ServerSocket.close()
+
+def send_message(connection, from_account, to_account, amount):
+    connection.send(str.encode('Ok, it will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience'.format(
+        amount, from_account, to_account)))
+
+if __name__=='__main__':
+
+    ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+    ThreadCount = 0
+    try:
+        ServerSocket.bind((HOST, PORT))
+    except socket.error as e:
+        print(str(e))
+
+    print('[+] Waiting for client connection...')
+    ServerSocket.listen(5)
+    HashTable = {}
+    
+    while True:
+        client, address = ServerSocket.accept()
+        client_handler = threading.Thread(
+            target=threaded_client,
+            args=(client,)  
+        )
+        client_handler.start()
+        ThreadCount += 1
+        print('Connection request: ' + str(ThreadCount))
