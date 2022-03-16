@@ -1,8 +1,7 @@
 import socket
 import threading
-import hashlib
-import signal
-import sys
+import hashlib, hmac
+import signal, sys
 
 HOST = '127.0.0.1'
 PORT = 1233
@@ -14,22 +13,20 @@ def signal_handler(key, frame):
 signal = signal.signal(signal.SIGINT, signal_handler)
 
 def threaded_client(connection):
-    connection.send(str.encode('\nEnter your username: '))
-    username = connection.recv(2048)
-    username = username.decode()
-    connection.send(str.encode('\nEnter your password: '))
-    password = connection.recv(2048)
-    password = password.decode()
-    password=hashlib.sha256(str.encode(password)).hexdigest()
+    # connection.send(str.encode('\nEnter your username: '))
+    # username = connection.recv(2048)
+    # username = username.decode()
+    # connection.send(str.encode('\nEnter your password: '))
+    # password = connection.recv(2048)
+    # password = password.decode()
+    # password=hashlib.sha256(str.encode(password)).hexdigest()
 
-    check_login(connection, username, password)
+    # check_login(connection, username, password)
     
-    transference = connection.recv(2048)
-    from_account = transference.decode().split(',')[0].strip()
-    to_account = transference.decode().split(',')[1].strip()
-    amount = transference.decode().split(',')[2].strip()
+    key = recv_key(connection)
+    message = connection.recv(2048)
+    check_message(connection, message, key)
 
-    send_message(connection, from_account, to_account, amount)
     connection.close()
 
 def check_login(connection, username, password):
@@ -52,6 +49,24 @@ def check_login(connection, username, password):
             connection.send(str.encode('\n[!] Login failed'))
             print('Connection denied: ',username)
 
+
+def recv_key(connection):
+    key = connection.recv(1024)
+    return key.decode()
+
+def check_message(connection, message, key):
+    from_account = message.decode().split(':')[0].strip()
+    to_account = message.decode().split(':')[1].strip()
+    amount = message.decode().split(':')[2].strip()
+    nonce = message.decode().split(':')[3].strip()
+    mac = message.decode().split(':')[4].strip()
+    
+    check_message = from_account + ":" + to_account + ":" + amount + ":" + nonce
+    
+    if(hmac.compare_digest(mac, hmac.new(str.encode(key), str.encode(check_message), hashlib.sha256).hexdigest())):
+        send_message(connection, from_account, to_account, amount)
+    else:
+        connection.send(str.encode('\n[!] Invalid message'))
 
 def send_message(connection, from_account, to_account, amount):
     connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\n'.format(
