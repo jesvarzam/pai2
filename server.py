@@ -14,10 +14,10 @@ def signal_handler(key, frame):
 signal = signal.signal(signal.SIGINT, signal_handler)
 
 def threaded_client(connection):
-    connection.send(str.encode('Enter your username: '))
+    connection.send(str.encode('\nEnter your username: '))
     username = connection.recv(2048)
     username = username.decode()
-    connection.send(str.encode('Enter your password: '))
+    connection.send(str.encode('\nEnter your password: '))
     password = connection.recv(2048)
     password = password.decode()
     password=hashlib.sha256(str.encode(password)).hexdigest()
@@ -36,7 +36,7 @@ def check_login(connection, username, password):
  
     if username not in HashTable:
         HashTable[username]=password
-        connection.send(str.encode('[+] Registration successful')) 
+        connection.send(str.encode('\n[+] Registration successful')) 
         print('Registered: ',username)
         print("{:<8} {:<20}".format('Username','Password'))
         for k, v in HashTable.items():
@@ -46,15 +46,15 @@ def check_login(connection, username, password):
         
     else:
         if(HashTable[username] == password):
-            connection.send(str.encode('[+] Connection successful'))
+            connection.send(str.encode('\n[+] Connection successful'))
             print('[+] Connected: ',username)
         else:
-            connection.send(str.encode('[!] Login failed'))
+            connection.send(str.encode('\n[!] Login failed'))
             print('Connection denied: ',username)
 
 
 def send_message(connection, from_account, to_account, amount):
-    connection.send(str.encode('Ok, it will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience'.format(
+    connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\n'.format(
         amount, from_account, to_account)))
 
 if __name__=='__main__':

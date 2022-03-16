@@ -28,7 +28,10 @@ def login(client):
 
 def send_message(client):
 	while True:
-		message = input()
+		from_account = input("\nEnter your account number: ")
+		to_account = input("\nEnter the account number you want to transfer to: ")
+		amount = input("\nEnter the amount you want to transfer: ")
+		message = from_account + "," + to_account + "," + amount
 		if message == 'q':
 			break
 		client.send(str.encode(message))
