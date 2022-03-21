@@ -26,6 +26,8 @@ def send_message(client, key):
 			break
 		client.send(str.encode(message))
 		response = client.recv(2048)
+		client.send(str.encode(message))
+		response = client.recv(2048)
 		return response.decode()
 
 if __name__=='__main__':

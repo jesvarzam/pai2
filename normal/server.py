@@ -50,6 +50,7 @@ def check_nonce(message):
     nonce = message.decode().split(':')[3].strip()
     if nonce in NonceTable:
         return False
+    NonceTable.append(nonce)
     return True
 
 if __name__=='__main__':
