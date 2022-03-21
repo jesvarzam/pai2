@@ -13,42 +13,16 @@ def signal_handler(key, frame):
 signal = signal.signal(signal.SIGINT, signal_handler)
 
 def threaded_client(connection):
-    # connection.send(str.encode('\nEnter your username: '))
-    # username = connection.recv(2048)
-    # username = username.decode()
-    # connection.send(str.encode('\nEnter your password: '))
-    # password = connection.recv(2048)
-    # password = password.decode()
-    # password=hashlib.sha256(str.encode(password)).hexdigest()
-
-    # check_login(connection, username, password)
     
+    connection.send(str.encode('\n[+] Connection successful'))
     key = recv_key(connection)
     message = connection.recv(2048)
+    if not check_nonce(message):
+        connection.send(str.encode('\n[!] Repeated nonce. Please try again.'))
+        connection.close()
+        return
     check_message(connection, message, key)
-
     connection.close()
-
-def check_login(connection, username, password):
- 
-    if username not in HashTable:
-        HashTable[username]=password
-        connection.send(str.encode('\n[+] Registration successful')) 
-        print('Registered: ',username)
-        print("{:<8} {:<20}".format('Username','Password'))
-        for k, v in HashTable.items():
-            label, num = k,v
-            print("{:<8} {:<20}".format(label, num))
-        print("-------------------------------------------")
-        
-    else:
-        if(HashTable[username] == password):
-            connection.send(str.encode('\n[+] Connection successful'))
-            print('[+] Connected: ',username)
-        else:
-            connection.send(str.encode('\n[!] Login failed'))
-            print('Connection denied: ',username)
-
 
 def recv_key(connection):
     key = connection.recv(1024)
@@ -71,19 +45,26 @@ def check_message(connection, message, key):
 def send_message(connection, from_account, to_account, amount):
     connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\n'.format(
         amount, from_account, to_account)))
+    
+def check_nonce(message):
+    nonce = message.decode().split(':')[3].strip()
+    if nonce in NonceTable:
+        return False
+    return True
 
 if __name__=='__main__':
 
     ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-    ThreadCount = 0
+    ServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
     try:
         ServerSocket.bind((HOST, PORT))
     except socket.error as e:
         print(str(e))
 
-    print('[+] Waiting for client connection...')
+    print('\n[+] Waiting for client connection...')
     ServerSocket.listen(5)
-    HashTable = {}
+    NonceTable = []
     
     while True:
         client, address = ServerSocket.accept()
@@ -92,5 +73,4 @@ if __name__=='__main__':
             args=(client,)  
         )
         client_handler.start()
-        ThreadCount += 1
-        print('Connection request: ' + str(ThreadCount))
+        print('\n[+] Connection received.')
