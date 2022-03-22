@@ -15,26 +15,26 @@ signal = signal.signal(signal.SIGINT, signal_handler)
 
 def threaded_client(connection):
     connection.send(str.encode('\n[+] Connection successful'))
-    key = recv_key(connection)
+    key = connection.recv(1024)    
     message = connection.recv(2048)
-    connection.close()
+    message_dec=message.decode()
+    print("[↓] Captured message [↓]")
+    print(message_dec + "\n")
+    print("[↓] Message breakdown [↓]")
+    print("From: " + str(message_dec).split(":")[0])
+    print("To: " + str(message_dec).split(":")[1])
+    print("Amount: " + str(message_dec).split(":")[2] +"\n")
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.connect((HOST, SERVER_PORT))
     server.send(key)
-    time.sleep(0.5)
+    time.sleep(0.1)
     server.send(message)
-    time.sleep(0.5)
+    time.sleep(0.1)
     response = server.recv(2048)
-    print('hola', response.decode())
+    print("[↓] Server Response [↓] ")
+    print(response.decode())
+    connection.send(response)
     #attack_option = input("\n[+] Do you want to attack this message? (1: Replay attack - 2: MITM attack)")
-
-def recv_key(connection):
-    key = connection.recv(1024)
-    return key
-
-def send_message(connection, from_account, to_account, amount):
-    connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\n'.format(
-        amount, from_account, to_account)))
 
 if __name__=='__main__':
 
@@ -56,4 +56,4 @@ if __name__=='__main__':
             args=(client,)  
         )
         client_handler.start()
-        print('\n[+] Connection received.')
+        print('\n[+] Connection received.\n')

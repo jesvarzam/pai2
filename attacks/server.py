@@ -47,7 +47,6 @@ def send_message(connection, from_account, to_account, amount):
         amount, from_account, to_account)))
     
 def check_nonce(message):
-    print('hola:',message.decode())
     nonce = message.decode().split(':')[3].strip()
     if nonce in NonceTable:
         return False
