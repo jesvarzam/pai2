@@ -1,10 +1,11 @@
 import socket
 import threading
 import hashlib, hmac
-import signal, sys
+import signal, sys, time
 
 HOST = '127.0.0.1'
-PORT = 1233
+MITM_PORT = 1233
+SERVER_PORT = 1234
 
 def signal_handler(key, frame):
 	print("\n\n[!] Exiting...\n")
@@ -13,46 +14,27 @@ def signal_handler(key, frame):
 signal = signal.signal(signal.SIGINT, signal_handler)
 
 def threaded_client(connection):
-    
     connection.send(str.encode('\n[+] Connection successful'))
     key = recv_key(connection)
-    print('hola', key)
     message = connection.recv(2048)
-    if not check_nonce(message):
-        connection.send(str.encode('\n[!] Repeated nonce. Please try again.'))
-        connection.close()
-        return
-    check_message(connection, message, key)
     connection.close()
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.connect((HOST, SERVER_PORT))
+    server.send(key)
+    time.sleep(0.5)
+    server.send(message)
+    time.sleep(0.5)
+    response = server.recv(2048)
+    print('hola', response.decode())
+    #attack_option = input("\n[+] Do you want to attack this message? (1: Replay attack - 2: MITM attack)")
 
 def recv_key(connection):
     key = connection.recv(1024)
-    return key.decode()
-
-def check_message(connection, message, key):
-    from_account = message.decode().split(':')[0].strip()
-    to_account = message.decode().split(':')[1].strip()
-    amount = message.decode().split(':')[2].strip()
-    nonce = message.decode().split(':')[3].strip()
-    mac = message.decode().split(':')[4].strip()
-    
-    check_message = from_account + ":" + to_account + ":" + amount + ":" + nonce
-    
-    if(hmac.compare_digest(mac, hmac.new(str.encode(key), str.encode(check_message), hashlib.sha256).hexdigest())):
-        send_message(connection, from_account, to_account, amount)
-    else:
-        connection.send(str.encode('\n[!] Invalid message'))
+    return key
 
 def send_message(connection, from_account, to_account, amount):
     connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\n'.format(
         amount, from_account, to_account)))
-    
-def check_nonce(message):
-    nonce = message.decode().split(':')[3].strip()
-    if nonce in NonceTable:
-        return False
-    NonceTable.append(nonce)
-    return True
 
 if __name__=='__main__':
 
@@ -60,13 +42,12 @@ if __name__=='__main__':
     ServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     try:
-        ServerSocket.bind((HOST, PORT))
+        ServerSocket.bind((HOST, MITM_PORT))
     except socket.error as e:
         print(str(e))
 
     print('\n[+] Waiting for client connection...')
     ServerSocket.listen(5)
-    NonceTable = []
     
     while True:
         client, address = ServerSocket.accept()

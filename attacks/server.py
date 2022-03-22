@@ -4,7 +4,7 @@ import hashlib, hmac
 import signal, sys
 
 HOST = '127.0.0.1'
-PORT = 1233
+PORT = 1234
 
 def signal_handler(key, frame):
 	print("\n\n[!] Exiting...\n")
@@ -16,12 +16,6 @@ def threaded_client(connection):
     
     connection.send(str.encode('\n[+] Connection successful'))
     key = recv_key(connection)
-    message = connection.recv(2048)
-    if not check_nonce(message):
-        connection.send(str.encode('\n[!] Repeated nonce. Please try again.'))
-        connection.close()
-        return
-    check_message(connection, message, key)
     message = connection.recv(2048)
     if not check_nonce(message):
         connection.send(str.encode('\n[!] Repeated nonce. Please try again.'))
@@ -53,6 +47,7 @@ def send_message(connection, from_account, to_account, amount):
         amount, from_account, to_account)))
     
 def check_nonce(message):
+    print('hola:',message.decode())
     nonce = message.decode().split(':')[3].strip()
     if nonce in NonceTable:
         return False
