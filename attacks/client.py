@@ -37,13 +37,14 @@ def send_message(client, key):
 		message+= ":" + mac + ":" + alg_cript
 		client.send(str.encode(message))
 		response = client.recv(2048)
+		print("\n" + response.decode())
 		response_dec=str(response.decode()).split(": ")[1]
 		id_transfer=str(response_dec).split("-")[0]
 		mac_transfer=str(response_dec).split("-")[1].strip()
 		if(hmac.compare_digest(mac_transfer, hmac.new(key, str.encode(id_transfer), hashlib.sha256).hexdigest())):
-			print("[+] Integrity verify")
+			print("\n[+] Integrity verified. Transfer successful.")
 		else:
-			print("[!] Integrity fail")
+			print("\n[!] Integrity failed ➝ MITM attack detected")
 		return response.decode()
 
 if __name__=='__main__':
@@ -56,5 +57,4 @@ if __name__=='__main__':
 	
 	key = generate_and_send_key(client)
 	message_response = send_message(client, key)
-	print(message_response)
 	client.close()

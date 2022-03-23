@@ -17,6 +17,7 @@ signal = signal.signal(signal.SIGINT, signal_handler)
 def threaded_client(connection):
     
     key = connection.recv(1024)
+    time.sleep(1)
     message = connection.recv(1024)
     if not check_nonce(message):
         write_log(False)

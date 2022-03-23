@@ -46,8 +46,6 @@ def send_message(client, key):
 			print("\n[+] Integrity verify")
 		else:
 			print("\n[!] Integrity fail")
-		client.send(str.encode(message))
-		response = client.recv(2048)
 		return response.decode()
 
 if __name__=='__main__':
