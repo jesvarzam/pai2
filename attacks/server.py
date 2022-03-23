@@ -15,6 +15,7 @@ signal = signal.signal(signal.SIGINT, signal_handler)
 def threaded_client(connection):
     
     connection.send(str.encode('\n[+] Connection successful'))
+
     key = recv_key(connection)
     message = connection.recv(2048)
     if not check_nonce(message):

