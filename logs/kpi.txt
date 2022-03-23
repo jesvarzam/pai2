@@ -1,0 +1,4 @@
+Valid messages: 14
+Invalid messages: 94
+Total messages: 108
+KPI: 12.96%
