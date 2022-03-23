@@ -177,4 +177,59 @@
 [23-Mar-2022 (18:24:54)] ➝ Invalid message, repeated nonce ➝ a:b:200:e1ab6c7f05f246fbbbef5a012229eb76:97b0e86c8474a80da9f796a2fa5d6e46bed4e4667348dd2c0a582228f37f2205:1
 
 [23-Mar-2022 (18:25:23)] ➝ Invalid message, HMAC is different ➝ a:caca:2000000:df1a32d7ba75425a95e540978ef21f12:1f720f671a0e29475effafe48bcc29e76e05b97279fdd125091bc6a8d2f0fdfe:1
+[23-Mar-2022 (19:03:48)] ➝ Valid message ➝ a:b:200:b09f018c5cd2423da60e4a4ff8adc766:981e23f77c36efc888927d59980c7d7f5fe992b2e1338cabb1ed8b2d0b675a5c:1
+
+[23-Mar-2022 (19:03:49)] ➝ Invalid message, repeated nonce ➝ a:b:200:b09f018c5cd2423da60e4a4ff8adc766:981e23f77c36efc888927d59980c7d7f5fe992b2e1338cabb1ed8b2d0b675a5c:1
+
+[23-Mar-2022 (19:03:51)] ➝ Invalid message, repeated nonce ➝ a:b:200:b09f018c5cd2423da60e4a4ff8adc766:981e23f77c36efc888927d59980c7d7f5fe992b2e1338cabb1ed8b2d0b675a5c:1
+
+[23-Mar-2022 (19:03:52)] ➝ Invalid message, repeated nonce ➝ a:b:200:b09f018c5cd2423da60e4a4ff8adc766:981e23f77c36efc888927d59980c7d7f5fe992b2e1338cabb1ed8b2d0b675a5c:1
+
+[23-Mar-2022 (19:18:40)] ➝ Invalid message, HMAC is different ➝ a:b:10000:3957f612a1f34d43b64402c976514644:905661680c7465b851b93b9c1d19e5455debda2d1202f8481128950cec2a21fe:1
+
+[23-Mar-2022 (19:21:01)] ➝ Valid message ➝ cuenta1:cuenta2:200€:b38be7c2b119483381e507b3ebb49d18:129f8e804315f75223babce0189ee539a2296142c156221dbfffeb4874c10780:1
+
+[23-Mar-2022 (19:21:41)] ➝ Valid message ➝ cuenta1:cuenta2:200€:882823e11942457db0041605acbfe8ea:732840fd70ecb65a587a37d5ca2cf8ca7b5ddd3a5a72e7ec232628aa902bf193:1
+
+[23-Mar-2022 (19:25:16)] ➝ Valid message ➝ cuenta1:cuenta2:100€:6de9859be7e04a61b188a92bf93fce59:26a537ed41843a54ca150da13fe4f0a7b2104d6209dd112293a9c5102b5dcec9:1
+
+[23-Mar-2022 (19:25:17)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:6de9859be7e04a61b188a92bf93fce59:26a537ed41843a54ca150da13fe4f0a7b2104d6209dd112293a9c5102b5dcec9:1
+
+[23-Mar-2022 (19:25:18)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:6de9859be7e04a61b188a92bf93fce59:26a537ed41843a54ca150da13fe4f0a7b2104d6209dd112293a9c5102b5dcec9:1
+
+[23-Mar-2022 (19:25:20)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:6de9859be7e04a61b188a92bf93fce59:26a537ed41843a54ca150da13fe4f0a7b2104d6209dd112293a9c5102b5dcec9:1
+
+[23-Mar-2022 (19:25:21)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:6de9859be7e04a61b188a92bf93fce59:26a537ed41843a54ca150da13fe4f0a7b2104d6209dd112293a9c5102b5dcec9:1
+
+[23-Mar-2022 (19:25:23)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:6de9859be7e04a61b188a92bf93fce59:26a537ed41843a54ca150da13fe4f0a7b2104d6209dd112293a9c5102b5dcec9:1
+
+[23-Mar-2022 (19:26:37)] ➝ Valid message ➝ cuenta1:cuenta2:100€:09482d2fa11d43e3b39e2a4f24ad3c2f:a470d45484dad34daa9c1006870dd9991410bee999c517cfae7ed118df93673b:1
+
+[23-Mar-2022 (19:26:38)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:09482d2fa11d43e3b39e2a4f24ad3c2f:a470d45484dad34daa9c1006870dd9991410bee999c517cfae7ed118df93673b:1
+
+[23-Mar-2022 (19:26:39)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:09482d2fa11d43e3b39e2a4f24ad3c2f:a470d45484dad34daa9c1006870dd9991410bee999c517cfae7ed118df93673b:1
+
+[23-Mar-2022 (19:26:41)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:09482d2fa11d43e3b39e2a4f24ad3c2f:a470d45484dad34daa9c1006870dd9991410bee999c517cfae7ed118df93673b:1
+
+[23-Mar-2022 (19:26:42)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:09482d2fa11d43e3b39e2a4f24ad3c2f:a470d45484dad34daa9c1006870dd9991410bee999c517cfae7ed118df93673b:1
+
+[23-Mar-2022 (19:26:44)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:09482d2fa11d43e3b39e2a4f24ad3c2f:a470d45484dad34daa9c1006870dd9991410bee999c517cfae7ed118df93673b:1
+
+[23-Mar-2022 (19:29:09)] ➝ Valid message ➝ cuenta1:cuenta2:100€:5333c3c6a17642d6919083bfc9425923:c1e189c47cdc895dd959182b3864eb1e0510911347aeb708faaa77ea48d4344f:1
+
+[23-Mar-2022 (19:29:10)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:5333c3c6a17642d6919083bfc9425923:c1e189c47cdc895dd959182b3864eb1e0510911347aeb708faaa77ea48d4344f:1
+
+[23-Mar-2022 (19:29:11)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:5333c3c6a17642d6919083bfc9425923:c1e189c47cdc895dd959182b3864eb1e0510911347aeb708faaa77ea48d4344f:1
+
+[23-Mar-2022 (19:29:13)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:5333c3c6a17642d6919083bfc9425923:c1e189c47cdc895dd959182b3864eb1e0510911347aeb708faaa77ea48d4344f:1
+
+[23-Mar-2022 (19:29:14)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:5333c3c6a17642d6919083bfc9425923:c1e189c47cdc895dd959182b3864eb1e0510911347aeb708faaa77ea48d4344f:1
+
+[23-Mar-2022 (19:29:16)] ➝ Invalid message, repeated nonce ➝ cuenta1:cuenta2:100€:5333c3c6a17642d6919083bfc9425923:c1e189c47cdc895dd959182b3864eb1e0510911347aeb708faaa77ea48d4344f:1
+
+[23-Mar-2022 (19:30:14)] ➝ Invalid message, HMAC is different ➝ cuenta1:cuenta2:1000€:869f862e39114461b0ce830cc3f8b3cc:169cc8585f9c1bc5d3d68c31d9f01208a65c0a5c696c50e563e7d40269bce11d:1
+
+[23-Mar-2022 (19:31:14)] ➝ Invalid message, HMAC is different ➝ cuenta1:cuenta2:10000€:4467354812c4475d824e1b709f75dbfe:0f539ccb4c57caf1b05225df4418ed238b4bd6d64fbd4a394cdfd8c2dfb98fa74de2649d1fcd2146969f5c7b1d5a820c956dddf859014a9bc69c6e6d3c793f6e:2
+
+[23-Mar-2022 (19:32:42)] ➝ Valid message ➝ cuenta1:cuenta2:500€:a59da4ff4dc14b009cbca09c85302e5e:ee0c3419f9b19373bce67e562b7d4e23f4827f4ba3657acdc063d107429544b6:3
 

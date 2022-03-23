@@ -1,6 +1,6 @@
 import socket
 import threading
-import hashlib, hmac
+import hmac, hashlib, uuid, signal,sys, os
 import signal, sys, os
 from datetime import datetime
 
@@ -27,7 +27,7 @@ def threaded_client(connection):
     
     alg_cript = message.decode().split(':')[5].strip()
     calculated_hmac = calculate_hmac(key, message, alg_cript)
-    check_message(connection, message, calculated_hmac)
+    check_message(connection, message, calculated_hmac,key)
     connection.close()
 
 def calculate_hmac(key, message, alg_cript):
@@ -47,7 +47,7 @@ def calculate_hmac(key, message, alg_cript):
     else:
 	    print("Invalid algorithm")
 
-def check_message(connection, message, calculated_hmac):
+def check_message(connection, message, calculated_hmac,key):
     from_account = message.decode().split(':')[0].strip()
     to_account = message.decode().split(':')[1].strip()
     amount = message.decode().split(':')[2].strip()
@@ -56,15 +56,19 @@ def check_message(connection, message, calculated_hmac):
     if(mac == calculated_hmac):
         write_log(True)
         write_message('[{}] ➝ Valid message ➝ '.format(datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")) + message.decode() + '\n\n')
-        send_message(connection, from_account, to_account, amount)
+        send_message(connection, from_account, to_account, amount, key)
+
     else:
         write_log(False)
         write_message('[{}] ➝ Invalid message, HMAC is different ➝ '.format(datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")) + message.decode() + '\n\n')
         connection.send(str.encode('\n[!] Invalid message, HMAC is different. Please try again.'))
 
-def send_message(connection, from_account, to_account, amount):
-    connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\n'.format(
-        amount, from_account, to_account)))
+def send_message(connection, from_account, to_account, amount, key):
+    id_transfer=uuid.uuid4().hex
+    mac = hmac.new(key, str.encode(id_transfer), hashlib.sha256).hexdigest()
+    res=str(id_transfer)+"-"+str(mac)
+    connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\nYour transfer id is: {}\n'.format(
+        amount, from_account, to_account,res)))
     
 def check_nonce(message):
     nonce = message.decode().split(':')[3].strip()

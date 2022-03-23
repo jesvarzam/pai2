@@ -36,8 +36,16 @@ def send_message(client, key):
 		message = from_account + ":" + to_account + ":" + amount + ":" + uuid.uuid4().hex
 		mac = calculate_hmac(message, key, alg_cript)
 		message+= ":" + mac + ":" + alg_cript
+
 		client.send(str.encode(message))
 		response = client.recv(2048)
+		response_dec=str(response.decode()).split(": ")[1]
+		id_transfer=str(response_dec).split("-")[0]
+		mac_transfer=str(response_dec).split("-")[1].strip()
+		if(hmac.compare_digest(mac_transfer, hmac.new(key, str.encode(id_transfer), hashlib.sha256).hexdigest())):
+			print("\n[+] Integrity verify")
+		else:
+			print("\n[!] Integrity fail")
 		return response.decode()
 
 if __name__=='__main__':
