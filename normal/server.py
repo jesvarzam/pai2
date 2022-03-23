@@ -1,6 +1,7 @@
 import socket
 import threading
 import hmac, hashlib, uuid, signal,sys, os
+import signal, sys, os
 from datetime import datetime
 
 HOST = '127.0.0.1'
@@ -56,6 +57,7 @@ def check_message(connection, message, calculated_hmac,key):
         write_log(True)
         write_message('[{}] ➝ Valid message ➝ '.format(datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")) + message.decode() + '\n\n')
         send_message(connection, from_account, to_account, amount, key)
+
     else:
         write_log(False)
         write_message('[{}] ➝ Invalid message, HMAC is different ➝ '.format(datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")) + message.decode() + '\n\n')

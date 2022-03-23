@@ -1,6 +1,7 @@
 import socket
 import threading
 import hmac, hashlib, uuid, signal,sys,os
+import signal, sys, os, time
 from datetime import datetime
 
 HOST = '127.0.0.1'
@@ -56,6 +57,7 @@ def check_message(connection, message, calculated_hmac,key):
         write_log(True)
         write_message('[{}] ➝ Valid message ➝ '.format(datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")) + message.decode() + '\n\n')
         send_message(connection, from_account, to_account, amount,key)
+
     else:
         write_log(False)
         write_message('[{}] ➝ Invalid message, HMAC is different ➝ '.format(datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")) + message.decode() + '\n\n')
@@ -67,7 +69,8 @@ def send_message(connection, from_account, to_account, amount, key):
     res=str(id_transfer)+"-"+str(mac)
     connection.send(str.encode('\n[+] It will be transfered {} from {} to {} in 2-3 working days. Thanks for your patience.\nYour transfer id is: {}\n'.format(
         amount, from_account, to_account,res)))
-    
+
+
 def check_nonce(message):
     nonce = message.decode().split(':')[3].strip()
     if nonce in NonceTable:
